@@ -1,32 +1,27 @@
-# Stage 1: Rasa Dependencies
-FROM python:3.10 AS rasa-stage
-WORKDIR /app                        # Set working directory
-RUN mkdir -p /app                   # Ensure /app directory exists
+# Base stage: Install dependencies
+FROM python:3.10 AS base
+WORKDIR /app
+RUN mkdir -p /app
 
-COPY requirements.txt /app          
-RUN pip install --no-cache-dir rasa==3.6.21 protobuf==4.23.3
+# Copy requirements and install them
+COPY requirements.txt /app
+RUN pip install --no-cache-dir -r /app/requirements.txt
 
-# Stage 2: TensorFlow Dependencies
-FROM python:3.10 AS tf-stage
-WORKDIR /app                        # Set working directory
-RUN mkdir -p /app                   # Ensure /app directory exists
-
-COPY requirements.txt /app         
-RUN pip install --no-cache-dir tensorflow-cpu==2.11.1 protobuf==3.19.6
-
-# Final Stage: Combine Both Environments
+# Final stage: Install Rasa and TensorFlow in the final image
 FROM python:3.10
-WORKDIR /app                        # Set the final working directory
+WORKDIR /app
 
-# Copy files from previous stages
-COPY --from=rasa-stage /app /app
-COPY --from=tf-stage /app /app
+# Copy installed dependencies from the base stage
+COPY --from=base /app /app
 
-# Copy the project files
+# Install Rasa and TensorFlow explicitly in the final stage
+RUN pip install --no-cache-dir rasa==3.6.21 tensorflow-cpu==2.11.1 protobuf==3.19.6
+
+# Copy project files
 COPY . .
 
-# Expose port for Rasa
+# Expose Rasa port
 EXPOSE 5005
 
-# Command to run the Rasa server
+# Start Rasa server
 CMD ["rasa", "run", "--enable-api", "--cors", "*", "--debug"]
