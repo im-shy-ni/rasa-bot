@@ -1,25 +1,22 @@
-# Use Python 3.10 base image
-FROM python:3.10-slim
-
-# Switch to root user to avoid permission issues
-USER root
-
-# Set working directory
+# Stage 1: Rasa Dependencies
+FROM python:3.10 AS rasa-stage
 WORKDIR /app
 
-# Install dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir rasa==3.6.21 protobuf==4.23.3
 
-# Install non-AVX TensorFlow version with root permissions
-RUN pip uninstall -y tensorflow && \
-    pip install tensorflow-cpu==2.11.1 --no-cache-dir
+# Stage 2: TensorFlow Dependencies
+FROM python:3.10 AS tf-stage
+WORKDIR /app
 
-# Copy the project files
-COPY . .
+COPY requirements.txt .
+RUN pip install --no-cache-dir tensorflow-cpu==2.11.1 protobuf==3.19.6
 
-# Switch back to non-root user
-USER 1001
+# Final Stage: Combine Both Environments
+FROM python:3.10
 
-# Run the Rasa server
-CMD ["rasa", "run", "--enable-api", "--cors", "*"]
+COPY --from=rasa-stage /app /app
+COPY --from=tf-stage /app /app
+
+WORKDIR /app
+CMD ["python", "run.py"]
