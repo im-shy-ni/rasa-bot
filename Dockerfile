@@ -15,7 +15,7 @@ WORKDIR /app
 COPY --from=base /app /app
 
 # Install compatible versions of Rasa and TensorFlow
-RUN pip install --no-cache-dir rasa==3.6.21 tensorflow-cpu==2.13.0
+RUN pip install --no-cache-dir rasa==3.6.21 tensorflow-cpu==2.12.0
 
 # Copy the project files
 COPY . .
