@@ -14,10 +14,10 @@ WORKDIR /app
 # Copy installed dependencies from the base stage
 COPY --from=base /app /app
 
-# Install Rasa and TensorFlow explicitly in the final stage
-RUN pip install --no-cache-dir rasa==3.6.21 tensorflow-cpu==2.11.1 protobuf==3.19.6
+# Install compatible versions of Rasa and TensorFlow
+RUN pip install --no-cache-dir rasa==3.6.21 tensorflow-cpu==2.13.0
 
-# Copy project files
+# Copy the project files
 COPY . .
 
 # Expose Rasa port
