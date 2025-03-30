@@ -20,6 +20,8 @@ intents:
   - clear_button
   - continue
   - fallback
+  - get_admission_dates
+  - get_published_papers
   - out_of_scope
   - nlu_fallback
   - action_custom_fallback
@@ -30,7 +32,9 @@ actions:
   - action_clear_chat                #  Custom action to clear chat
   - action_continue_chat 
   - action_custom_fallback           #  Custom fallback action
-  - action_scrape_entire_website     #  Scraping entire website
+  - action_scrape_entire_website  
+  - action_get_admission_dates
+  - action_get_published_papers   #  Scraping entire website
 
 responses:
 
@@ -42,6 +46,12 @@ responses:
           payload: "/clear"
         - title: "❌ No, continue"
           payload: "/continue"
+
+  get_admission_dates:
+    - text: "The current admission dates for Bharathiyar University are from April 15 to May 30, 2025."
+
+  get_published_papers:
+    - text: "Bharathiyar University recently published papers on AI, Data Science, and Blockchain in 2024. You can find them on the official website."
 
   #  Greeting Responses
   utter_greet:
@@ -165,7 +175,7 @@ responses:
 
   utter_faq_college_services:
     - text: |
-         **College Services:**  
+        - **College Services:**  
         - **Library Services**: Access to books, journals, and digital resources.  
         - **Counseling and Guidance**: Academic and personal counseling.  
         - **Health Services**: On-campus health center.  

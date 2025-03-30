@@ -9,6 +9,20 @@ nlu:
     - hi
     - good morning
     - good evening
+- intent: get_admission_dates
+  examples: |
+    - What are the current admission dates?
+    - When does the admission start?
+    - Admission deadline for this year?
+    - Show me the latest admission dates
+
+- intent: get_published_papers
+  examples: |
+    - Show me the latest research papers
+    - Any new publications by the university?
+    - Recently published papers?
+    - Research papers on data science by Bharathiyar University
+
 
 - intent: goodbye
   examples: |

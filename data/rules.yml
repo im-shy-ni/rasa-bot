@@ -132,6 +132,16 @@ rules:
     - intent: clear_button
     - action: utter_clear_button
     - action: action_listen
+    
+- rule: Get Admission Dates
+  steps:
+  - intent: get_admission_dates
+  - action: action_get_admission_dates
+
+- rule: Get Published Papers
+  steps:
+  - intent: get_published_papers
+  - action: action_get_published_papers
 
 - rule: Answer college services query
   steps:

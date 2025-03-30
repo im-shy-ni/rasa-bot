@@ -148,3 +148,64 @@ class ActionClear(Action):
         except Exception as e:
             dispatcher.utter_message(f"❌ Error restarting chat: {str(e)}")
             return []
+from rasa_sdk import Action, Tracker
+from rasa_sdk.executor import CollectingDispatcher
+import requests
+from bs4 import BeautifulSoup
+
+class ActionGetAdmissionDates(Action):
+    def name(self) -> str:
+        return "action_get_admission_dates"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: dict) -> list:
+
+        url = "https://www.b-u.ac.in/Home/Admissions"  # Replace with the correct URL
+        response = requests.get(url)
+        
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.text, "html.parser")
+            
+            # Example: Extracting admission date details
+            dates_section = soup.find("div", class_="admission-dates")
+            if dates_section:
+                dates = dates_section.text.strip()
+                message = f"📅 The current admission dates are: \n{dates}"
+            else:
+                message = "⚠️ Unable to fetch the latest admission dates. Please check the website."
+        else:
+            message = "❌ Failed to connect to the university website. Please try again later."
+        
+        dispatcher.utter_message(text=message)
+        return []
+class ActionGetPublishedPapers(Action):
+    def name(self) -> str:
+        return "action_get_published_papers"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: dict) -> list:
+
+        url = "https://www.b-u.ac.in/Home/ResearchPublications"  # Replace with the correct URL
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.text, "html.parser")
+
+            papers = []
+            for item in soup.find_all("li", class_="paper-item", limit=5):
+                title = item.text.strip()
+                link = item.a["href"]
+                papers.append(f"- [{title}]({link})")
+
+            if papers:
+                message = "📰 Here are some recently published papers:\n" + "\n".join(papers)
+            else:
+                message = "⚠️ No recent papers found."
+        else:
+            message = "❌ Failed to connect to the university website. Please try again later."
+
+        dispatcher.utter_message(text=message)
+        return []
+
