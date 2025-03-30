@@ -2,11 +2,7 @@
 FROM python:3.10 AS base
 WORKDIR /app
 RUN mkdir -p /app
-# Enable swap memory to avoid crashes
-RUN fallocate -l 1G /swapfile
-RUN chmod 600 /swapfile
-RUN mkswap /swapfile
-RUN swapon /swapfile
+
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install them
