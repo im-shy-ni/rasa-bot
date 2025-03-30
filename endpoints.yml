@@ -1,69 +1,41 @@
-#  This file contains the different endpoints your bot can use.
+# This file contains the different endpoints your bot can use.
 
-# -----------------------------------------------------
-#  Server where the models are pulled from.
-# -----------------------------------------------------
+# Server where the models are pulled from.
 # https://rasa.com/docs/rasa/model-storage#fetching-models-from-a-server
 
-# Uncomment the following lines if you want to fetch the model from a server
 # models:
-#   url: "http://my-server.com/models/default_core@latest"
+#   url: http://my-server.com/models/default_core@latest
 #   wait_time_between_pulls: 10   # [optional] (default: 100)
 
-# -----------------------------------------------------
-#  Custom action server
-# -----------------------------------------------------
-# Ensure your action server is running at this endpoint.
-# Run with: `rasa run actions`
+# Server which runs your custom actions.
+# https://rasa.com/docs/rasa/custom-actions
 action_endpoint:
-  url: "https://e483-2401-4900-605e-fa81-5880-c8ec-69c7-4877.ngrok-free.app/webhooks/rest/webhook"
-   # Endpoint for custom actions
+  url: "http://localhost:5055/webhook"
 
-# -----------------------------------------------------
-#  Tracker store configuration (Optional)
-# -----------------------------------------------------
+# Tracker store which is used to store the conversations.
 # By default, conversations are stored in memory.
-# Uncomment Redis or MongoDB if you want to persist conversation data.
+# Uncomment and configure Redis or MongoDB if needed.
 
-#  Redis for storing conversations
 # tracker_store:
 #   type: redis
-#   url: localhost                 # Redis server address
-#   port: 6379                     # Redis default port
-#   db: 0                          # Redis database index
-#   password: ""                   # Redis password (if set)
-#   use_ssl: false                  # Use SSL connection if needed
+#   url: <host of the redis instance, e.g. localhost>
+#   port: 6379
+#   db: 0
+#   password: <your-redis-password>
+#   use_ssl: false
 
-# MongoDB for storing conversations
 # tracker_store:
 #   type: mongod
-#   url: "mongodb://localhost:27017"    # MongoDB server URL
-#   db: "rasa"                           # Database name
-#   username: "<your-mongo-username>"   # MongoDB username
-#   password: "<your-mongo-password>"   # MongoDB password
+#   url: "mongodb://localhost:27017"
+#   db: "rasa"
+#   username: "<your-mongo-username>"
+#   password: "<your-mongo-password>"
 
-# -----------------------------------------------------
-#  Event broker (Optional)
-# -----------------------------------------------------
-# For streaming conversation events (e.g., Kafka, RabbitMQ)
+# Event broker which streams conversation events.
+# Uncomment if you want to use an event broker.
 
-# RabbitMQ configuration
 # event_broker:
-#   type: "pika"                   # RabbitMQ type
-#   url: "localhost"               # RabbitMQ server address
-#   username: "username"           # RabbitMQ username
-#   password: "password"           # RabbitMQ password
-#   queue: "queue"                  # RabbitMQ queue
-
-# Kafka configuration (if using Kafka)
-# event_broker:
-#   type: "kafka"
-#   url: "localhost:9092"           # Kafka server address
-#   topic: "rasa_events"           # Kafka topic
-
-# -----------------------------------------------------
-#  Rasa model server configuration
-# -----------------------------------------------------
-# Use this if you want to run Rasa on a separate model server
-rasa:
-  url: "http://localhost:5005/api"    # Rasa server endpoint
+#   url: "localhost"
+#   username: "username"
+#   password: "password"
+#   queue: "queue"

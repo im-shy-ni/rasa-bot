@@ -1,29 +1,23 @@
-# Base stage: Install dependencies
-FROM python:3.10 AS base
-WORKDIR /app
-RUN mkdir -p /app
+# Base image with Python and Rasa installed
+FROM rasa/rasa:3.6.0 
 
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Copy requirements and install them
-COPY requirements.txt /app
-RUN pip install --no-cache-dir -r /app/requirements.txt
-
-# Final stage: Install Rasa and TensorFlow in the final image
-FROM python:3.10
+# Set working directory
 WORKDIR /app
 
-# Copy installed dependencies from the base stage
-COPY --from=base /app /app
+# Copy the Rasa project files into the container
+COPY . /app
 
-# Install compatible versions of Rasa and TensorFlow
-RUN pip install --no-cache-dir rasa==3.6.21 tensorflow-cpu==2.12.0
+# Install Rasa SDK for custom actions
+RUN pip install rasa-sdk
 
-# Copy the project files
-COPY . .
+# Install dependencies from requirements.txt
+RUN pip install -r requirements.txt
 
-# ✅ Use Railway's dynamic port
-EXPOSE $PORT
+# Expose Rasa port
+EXPOSE 5005
 
-# Start Rasa server using the dynamic port
-CMD ["rasa", "run", "--enable-api", "--cors", "*", "--debug", "-p", "${PORT}"]
+# Train the model
+RUN rasa train
+
+# Command to run Rasa server
+CMD ["rasa", "run", "--enable-api", "--cors", "*", "--debug"]
