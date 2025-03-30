@@ -22,8 +22,8 @@ RUN pip install --no-cache-dir rasa==3.6.21 tensorflow-cpu==2.12.0
 # Copy the project files
 COPY . .
 
-# Expose Rasa port
-EXPOSE 5005
+# ✅ Use Railway's dynamic port
+EXPOSE $PORT
 
-# Start Rasa server
-CMD ["rasa", "run", "--enable-api", "--cors", "*", "--debug"]
+# Start Rasa server using the dynamic port
+CMD ["rasa", "run", "--enable-api", "--cors", "*", "--debug", "-p", "${PORT}"]
